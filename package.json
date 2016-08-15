@@ -1,0 +1,18 @@
+{
+  "name": "workbot",
+  "version": "0.0.1",
+  "description": "Bot for dishwasher related tasks",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rupert Dunk",
+  "license": "ISC",
+  "dependencies": {
+    "botkit": "^0.2.2",
+    "cron": "^1.1.0",
+    "lodash": "^4.14.0",
+    "moment": "^2.14.1"
+  }
+}

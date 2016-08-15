@@ -1,0 +1,12 @@
+name: workbot
+description: Manages dishwasher related tasks
+config:
+ - name: MORNING
+   friendly_name: Morning Cron Time
+   default: '00 00 09 * * 1-5'
+ - name: EVENING
+   friendly_name: Evening Cron Time
+   default: '00 30 17 * * 1-5'
+ - name: CHANNEL
+   friendly_name: Bot Channel
+   default: 'social'
