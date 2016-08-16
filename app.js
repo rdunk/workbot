@@ -42,7 +42,7 @@ function morningSide(channel, bot) {
 		});
 		awaitingConfirmation = "morning";
 	});
-};
+}
 
 function eveningSide(channel, bot) {
 	getNext(function(target){
@@ -81,7 +81,7 @@ function addTasks(bot) {
 						channel: botChannel
 					});
 				}
-			})
+			});
 		}
 	});
 }
@@ -95,14 +95,14 @@ function addTasks(bot) {
 controller.hears([patterns.morning], 'direct_message', function(bot,message) {
 	tools.getChannelFromName(botChannel, bot, function(channel){
 		morningSide(channel, bot);
-	}
-}
+	});
+});
 
 controller.hears([patterns.evening], 'direct_message', function(bot,message) {
 	tools.getChannelFromName(botChannel, bot, function(channel){
 		eveningSide(channel, bot);
-	}
-}
+	});
+});
 
 // ------------------------------
 // List Previous Dishwasher
