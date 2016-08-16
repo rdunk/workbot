@@ -10,5 +10,9 @@ module.exports = {
 	list: {
 		add: ['dishwasher'],
 		last: ['who did the dishwasher last?', 'who did the dishwasher?', 'who loaded the dishwasher?', 'who loaded the dishwasher last?']
+	},
+	tasks: {
+		morning: ['good morning'],
+		evening: ['good evening']
 	}
 };

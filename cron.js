@@ -13,6 +13,7 @@ module.exports = function() {
 
 	module.createJob = function(opts){
 		var options = _.defaults(opts || {}, module.defaults);
+		console.log(options);
 		return new CronJob(options);
 	};
 

@@ -86,6 +86,24 @@ function addTasks(bot) {
 	});
 }
 
+
+
+// ------------------------------
+// Force Jobs
+// ------------------------------
+
+controller.hears([patterns.morning], 'direct_message', function(bot,message) {
+	tools.getChannelFromName(botChannel, bot, function(channel){
+		morningSide(channel, bot);
+	}
+}
+
+controller.hears([patterns.evening], 'direct_message', function(bot,message) {
+	tools.getChannelFromName(botChannel, bot, function(channel){
+		eveningSide(channel, bot);
+	}
+}
+
 // ------------------------------
 // List Previous Dishwasher
 // ------------------------------
