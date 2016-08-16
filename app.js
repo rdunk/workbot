@@ -1,14 +1,5 @@
 require('dotenv').config();
 
-var slacktoken = process.env.SLACK_TOKEN,
-	morningCron = process.env.MORNING,
-	eveningCron = process.env.EVENING,
-	botChannel = process.env.CHANNEL || 'team';
-
-console.log(morningCron);
-console.log(eveningCron);
-console.log(botChannel);
-
 var awaitingConfirmation = false;
 
 // require node packages
@@ -28,7 +19,7 @@ var tools = require('./tools')(controller),
 	phrases = require('./phrases');
 
 controller.spawn({
-	token: slacktoken
+	token: process.env.SLACK_TOKEN
 }).startRTM(function (err,bot,payload) {
 	if (err) {
 		throw new Error(err);
@@ -39,12 +30,15 @@ controller.spawn({
 	addTasks(bot);
 });
 
+// ------------------------------
+// Morning / Evening Tasks
+// ------------------------------
 
 function morningSide(channel, bot) {
 	getNext(function(target){
 		bot.say({
 			text: "Did " + tools.mentionUser(target) + " do the dishwasher last?",
-			channel: channel.id
+			channel: channel
 		});
 		awaitingConfirmation = "morning";
 	});
@@ -54,7 +48,7 @@ function eveningSide(channel, bot) {
 	getNext(function(target){
 		bot.say({
 			text: "Hi " + tools.mentionUser(target) + ". Can you please load the dishwasher before you leave?",
-			channel: channel.id
+			channel: channel
 		});
 		awaitingConfirmation = "evening";
 	});
@@ -65,18 +59,18 @@ function eveningSide(channel, bot) {
 // ------------------------------
 
 function addTasks(bot) {
-	tools.getChannelFromName(botChannel, bot, function(channel){
+	tools.getChannelFromName(process.env.CHANNEL, bot, function(channel){
 		if (channel) {
 			cron.createJob({
-				cronTime: morningCron,
+				cronTime: process.env.MORNING,
 				onTick: function(){
-					morningSide(channel, bot);
+					morningSide(channel.id, bot);
 				}
 			});
 			cron.createJob({
-				cronTime: eveningCron,
+				cronTime: process.env.EVENING,
 				onTick: function(){
-					eveningSide(channel, bot);
+					eveningSide(channel.id, bot);
 				}
 			});
 			cron.createJob({
@@ -84,7 +78,7 @@ function addTasks(bot) {
 				onTick: function(){
 					bot.say({
 						text: "Cleaning Time!",
-						channel: botChannel
+						channel: channel.id
 					});
 				}
 			});
@@ -98,16 +92,12 @@ function addTasks(bot) {
 // Force Jobs
 // ------------------------------
 
-controller.hears([patterns.morning], 'direct_message', function(bot,message) {
-	tools.getChannelFromName(botChannel, bot, function(channel){
-		morningSide(channel, bot);
-	});
+controller.hears(phrases.tasks.morning, 'direct_message', function(bot,message) {
+	morningSide(message.channel, bot);
 });
 
-controller.hears([patterns.evening], 'direct_message', function(bot,message) {
-	tools.getChannelFromName(botChannel, bot, function(channel){
-		eveningSide(channel, bot);
-	});
+controller.hears(phrases.tasks.evening, 'direct_message', function(bot,message) {
+	eveningSide(message.channel, bot);
 });
 
 // ------------------------------
