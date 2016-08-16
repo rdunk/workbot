@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var slacktoken = process.env.SLACK_TOKEN,
 	morningCron = process.env.MORNING,
 	eveningCron = process.env.EVENING,
