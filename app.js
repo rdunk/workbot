@@ -3,6 +3,10 @@ var slacktoken = process.env.SLACK_TOKEN,
 	eveningCron = process.env.EVENING,
 	botChannel = process.env.CHANNEL || 'team';
 
+console.log(morningCron);
+console.log(eveningCron);
+console.log(botChannel);
+
 var awaitingConfirmation = false;
 
 // require node packages
