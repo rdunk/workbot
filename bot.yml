@@ -4,9 +4,13 @@ config:
  - name: MORNING
    friendly_name: Morning Cron Time
    default: '00 00 09 * * 1-5'
+   type: text
  - name: EVENING
    friendly_name: Evening Cron Time
    default: '00 30 17 * * 1-5'
+   type: text
  - name: CHANNEL
    friendly_name: Bot Channel
    default: 'social'
+   type: text
+   
