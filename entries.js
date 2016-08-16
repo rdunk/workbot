@@ -13,19 +13,19 @@ module.exports = function(controller) {
 	var module = {};
 
 	module.get = function(id, uid, cb) {
-		controller.storage.teams.get(id, function(err, user){
+		controller.storage.entries.get(id, function(err, user){
 			cb(err, user);
 		});
 	};
 
 	module.save = function(id, uid, cb) {
-		controller.storage.teams.save({id: id, user: uid}, function(err, user){
+		controller.storage.entries.save({id: id, user: uid}, function(err, user){
 			cb(err, user);
 		});
 	};
 
 	module.getAll = function(cb) {
-		controller.storage.teams.all(function(err, entries) {
+		controller.storage.entries.all(function(err, entries) {
 			cb(entries);
 		});
 	};
@@ -68,7 +68,7 @@ module.exports = function(controller) {
 
 	// module.getNext = function(cb) {
 	// 	var nextElement = false;
-	// 	controller.storage.teams.all(function(err, entries){
+	// 	controller.storage.entries.all(function(err, entries){
 	// 		var entry = _.last(entries);
 	// 		// var user = entry.user;
 	// 		controller.storage.users.all(function(err, users) {

@@ -5,10 +5,13 @@ var awaitingConfirmation = false;
 // require node packages
 var Botkit = require('botkit'),
 	moment = require('moment'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	cloudant = require('./storage-cloudant')({account:"zakgroup",password:process.env.SLACK_TOKEN});
 
 // controller
-var controller = Botkit.slackbot({ json_file_store: 'db' });
+// var controller = Botkit.slackbot({ json_file_store: 'db' });
+
+var controller = Botkit.slackbot({ storage: cloudant });
 
 // require workbot files
 var tools = require('./tools')(controller),
@@ -287,7 +290,7 @@ function checkForEntryAndSave(response, convo, date, uid) {
 	entries.get(date, uid, function(err, user){
 		if (err) {
 			entries.save(date, uid, function(err, newuser){
-				var time = entries.getEntryTime(newuser);
+				var time = entries.getEntryTime(date);
 				convo.say("OK. I saved the entry for "+time+".");
 			});
 		} else {
