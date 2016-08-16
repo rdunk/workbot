@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 var awaitingConfirmation = false;
 
@@ -6,7 +6,7 @@ var awaitingConfirmation = false;
 var Botkit = require('botkit'),
 	moment = require('moment'),
 	_ = require('lodash'),
-	cloudant = require('./storage-cloudant')({account:"zakgroup",password:process.env.SLACK_TOKEN});
+	cloudant = require('./storage-cloudant')({account:process.env.CLOUDANT_ACC,password:process.env.CLOUDANT_PASS});
 
 // controller
 // var controller = Botkit.slackbot({ json_file_store: 'db' });

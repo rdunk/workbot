@@ -6,13 +6,27 @@ config:
    info: Cron time for morning task
    default: 00 00 09 * * 1-5
    type: text
+   global: true
  - name: EVENING
    friendly_name: Evening Cron Time
    info: Cron time for evening task
    default: 00 30 17 * * 1-5
    type: text
+   global: true
  - name: CHANNEL
    friendly_name: Bot Channel
    info: Main bot channel
    default: 'social'
    type: text
+   global: true
+ - name: CLOUDANT_ACC
+   friendly_name: Cloudant Account
+   info: Your Cloudant account name
+   type: text
+   global: true
+ - name: CLOUDANT_PASS
+   friendly_name: Cloudant Password
+   info: Your Cloudant account password
+   type: secret
+   global: true
+   
