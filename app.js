@@ -96,11 +96,11 @@ function addTasks(bot) {
 // ------------------------------
 
 controller.hears(phrases.tasks.morning, 'direct_message', function(bot,message) {
-	morningSide(message.channel, bot);
+	morningSide(process.env.CHANNEL, bot);
 });
 
 controller.hears(phrases.tasks.evening, 'direct_message', function(bot,message) {
-	eveningSide(message.channel, bot);
+	eveningSide(process.env.CHANNEL, bot);
 });
 
 // ------------------------------
@@ -134,10 +134,20 @@ controller.hears([patterns.lastentries], 'direct_message,ambient',function(bot,m
 // Confirm Dishwasher
 // ------------------------------
 
+function getPreviousWorkday() {
+	var day = moment().day();
+	// if day is Saturday, Sunday or Monday
+	if (day === 6 || day === 0 || day === 1) {
+		return moment().subtract(6,'days').day(5).format("YYMMDD");
+	} else {
+		return moment().subtract(1, 'day').format("YYMMDD");
+	}
+}
+
 controller.hears([patterns.yes], 'direct_message,ambient',function(bot,message){
 	if (awaitingConfirmation == "morning") {
 		getNext(function(user){
-			var date = moment().subtract(1, 'day').format("YYMMDD");
+			var date = getPreviousWorkday();
 			entries.save(date, user, function(err, newuser){
 				getNext(function(user){
 					bot.say({
