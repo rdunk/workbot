@@ -96,11 +96,16 @@ function addTasks(bot) {
 // ------------------------------
 
 controller.hears(phrases.tasks.morning, 'direct_message', function(bot,message) {
-	morningSide(process.env.CHANNEL, bot);
+	tools.getChannelFromName(process.env.CHANNEL, bot, function(channel){
+		morningSide(channel, bot);
+	});
+	
 });
 
 controller.hears(phrases.tasks.evening, 'direct_message', function(bot,message) {
-	eveningSide(process.env.CHANNEL, bot);
+	tools.getChannelFromName(process.env.CHANNEL, bot, function(channel){
+		eveningSide(channel, bot);
+	});
 });
 
 // ------------------------------
