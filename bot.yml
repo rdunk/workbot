@@ -30,7 +30,7 @@ config:
    type: secret
    global: true
 - name: TIMETASTIC_TOKEN
-  friendly_name: Timetastic Token
-  info: Your Timetastic API Token
-  type: secret
-  global: true
+   friendly_name: Timetastic Token
+   info: Your Timetastic API Token
+   type: secret
+   global: true
