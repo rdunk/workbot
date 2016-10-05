@@ -1,6 +1,9 @@
 // require('dotenv').config();
 
-var awaitingConfirmation = false;
+var awaitingConfirmation = false,
+	timetasticUsers,
+	slackUsers,
+	userList = [];
 
 // require node packages
 var Botkit = require('botkit'),
@@ -17,12 +20,14 @@ var controller = Botkit.slackbot({ storage: cloudant });
 var tools = require('./tools')(controller),
 	entries = require('./entries')(controller),
 	users = require('./users')(controller),
+	timetastic = require('./timetastic')(process.env.TIMETASTIC_TOKEN),
 	cron = require('./cron')(),
 	patterns = require('./patterns'),
 	phrases = require('./phrases');
 
 controller.spawn({
-	token: process.env.SLACK_TOKEN
+	token: process.env.SLACK_TOKEN,
+	retry: Infinity
 }).startRTM(function (err,bot,payload) {
 	if (err) {
 		throw new Error(err);
@@ -31,7 +36,30 @@ controller.spawn({
 	// console.log(payload.users);
 	// consider using payload.users instead of getting team list via api
 	addTasks(bot);
+	compileUserList();
 });
+
+function compileUserList() {
+	// clear current userList
+	userList = [];
+	// get slack users
+	var slack = new Promise(function(resolve, reject){
+		users.getAll(function(users) {
+			resolve(users);
+		});
+	});
+	// get timetastic users
+	var tt = new Promise(function(resolve, reject){
+		resolve(timetastic.users.get());
+	});
+	// after all users resolved, compile each
+	Promise.all([slack, tt]).then(function(users){
+		_.each(users[0], function(slackUser){
+			slackUser.timetastic = _.find(users[1], {'email':slackUser.profile.email});
+			userList.push(slackUser)
+		});
+	});
+}
 
 // ------------------------------
 // Morning / Evening Tasks
@@ -156,7 +184,7 @@ controller.hears([patterns.yes], 'direct_message,ambient',function(bot,message){
 			entries.save(date, user, function(err, newuser){
 				getNext(function(user){
 					bot.say({
-						text: "OK, great. Thanks.\nThat means it's " + tools.mentionUser(user) + "'s' turn today.",
+						text: "OK, great. Thanks.\nThat means it's " + tools.mentionUser(user) + "'s turn today.",
 						channel: message.channel
 					});
 				});
@@ -205,8 +233,22 @@ controller.hears([patterns.lastdishwasher],'direct_message,ambient',function(bot
 // Next Dishwasher
 // ------------------------------
 
+function checkIfAway(users) {
+	return new Promise(function(resolve, reject) {
+		resolve(timetastic.holidays.get());
+	}).then(function(tt) {
+		var holidayUserIds = _.map(tt.holidays, 'userId');
+		_.remove(users, function(user){
+			return _.includes(holidayUserIds, user.timetastic.id);
+		});
+		return users;
+	});
+}
+
 function getNext(cb){
-	users.getAll(function(users){
+	new Promise(function(resolve, reject){
+		resolve(checkIfAway(userList));
+	}).then(function(users) {
 		var userids = _.chain(users).sortBy('id').map('id').value();
 		entries.getAll(function(entries){
 			_.eachRight(entries, function(entry) {
@@ -303,7 +345,7 @@ function confirmOverwrite(response, convo, date, uid, user) {
 
 function checkForEntryAndSave(response, convo, date, uid) {
 	entries.get(date, uid, function(err, user){
-		if (err) {
+		if (user) {
 			confirmOverwrite(response, convo, date, uid, user);
 		} else {
 			entries.save(date, uid, function(err, newuser){
