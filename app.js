@@ -9,7 +9,6 @@ var awaitingConfirmation = false,
 var Botkit = require('botkit'),
 	moment = require('moment'),
 	_ = require('lodash'),
-	Promise = require('promise-polyfill'),
 	cloudant = require('./storage-cloudant')({account:process.env.CLOUDANT_ACC,password:process.env.CLOUDANT_PASS});
 
 // controller
@@ -248,7 +247,6 @@ function checkIfAway(users) {
 }
 
 function getNext(cb){
-	console.log("getNext");
 	new Promise(function(resolve, reject){
 		resolve(checkIfAway(userList));
 	}).then(function(users) {
