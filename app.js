@@ -57,9 +57,10 @@ function compileUserList() {
 	Promise.all([slack, tt]).then(function(users){
 		_.each(users[0], function(slackUser){
 			slackUser.timetastic = _.find(users[1], {'email':slackUser.profile.email});
-			userList.push(slackUser)
+			userList.push(slackUser);
 		});
 	});
+	console.log(userList);
 }
 
 // ------------------------------
