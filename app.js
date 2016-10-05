@@ -156,7 +156,7 @@ controller.hears([patterns.yes], 'direct_message,ambient',function(bot,message){
 			entries.save(date, user, function(err, newuser){
 				getNext(function(user){
 					bot.say({
-						text: "OK, great. Thanks.\nThat means it's " + tools.mentionUser(user) + " turn today.",
+						text: "OK, great. Thanks.\nThat means it's " + tools.mentionUser(user) + "'s' turn today.",
 						channel: message.channel
 					});
 				});
@@ -304,12 +304,13 @@ function confirmOverwrite(response, convo, date, uid, user) {
 function checkForEntryAndSave(response, convo, date, uid) {
 	entries.get(date, uid, function(err, user){
 		if (err) {
+			confirmOverwrite(response, convo, date, uid, user);
+		} else {
 			entries.save(date, uid, function(err, newuser){
 				var time = entries.getEntryTime(date);
 				convo.say("OK. I saved the entry for "+time+".");
+				convo.next();
 			});
-		} else {
-			confirmOverwrite(response, convo, date, uid, user);
 		}
 	});
 }
