@@ -246,6 +246,7 @@ function checkIfAway(users) {
 }
 
 function getNext(cb){
+	console.log("getNext");
 	new Promise(function(resolve, reject){
 		resolve(checkIfAway(userList));
 	}).then(function(users) {
