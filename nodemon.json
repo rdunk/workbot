@@ -1,3 +1,12 @@
 {
-	"ignore": ["db/*"]
+	"ignore": ["db/*"],
+	"env": {
+		"MORNING": "00 00 09 * * 1-5",
+		"EVENING": "00 30 17 * * 1-5",
+		"CHANNEL": "",
+		"CLOUDANT_ACC": "",
+		"CLOUDANT_PASS": "",
+		"SLACK_TOKEN": "",
+		"TIMETASTIC_TOKEN": ""
+	}
 }
