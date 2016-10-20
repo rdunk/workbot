@@ -18,7 +18,8 @@ module.exports = function(token) {
 
 	module.holidays = {
 		get: function() {
-			return returnJSON('https://app.timetastic.co.uk:443/api/holidays?nonarchivedusersonly=true&start=2016-10-05&end=2016-10-05&status=Approved');
+			var currentDate = new Date().toISOString().split('T')[0];
+			return returnJSON('https://app.timetastic.co.uk:443/api/holidays?nonarchivedusersonly=true&start='+currentDate+'&end='+currentDate+'&status=Approved');
 		}
 	};
 
